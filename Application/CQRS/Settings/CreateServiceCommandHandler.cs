@@ -1,5 +1,4 @@
-﻿using Application.CQRS.TestingHandl;
-using Domain.Models.ServiceSetting;
+﻿using Domain.Models.ServiceSetting;
 using Domain.Repositories;
 using Mediatator.Core.ComsQueries;
 

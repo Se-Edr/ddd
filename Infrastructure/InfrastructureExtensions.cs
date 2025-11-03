@@ -1,4 +1,5 @@
-﻿using Domain.Repositories;
+﻿using Domain.Events.Service;
+using Domain.Repositories;
 using Infrastructure.DataBase;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,8 @@ namespace Infrastructure
             services.AddScoped<IProcedureRepository, ProcedureRepository>();
             services.AddScoped<IWorkingDayRepository, WorkingDayRepository>();
             services.AddScoped<IMeetingRepository, MeetingRepository>();
+            services.AddScoped<IDomainDispatcher, DomainEventDispatcher>();
+            services.AddScoped<IDomainEventhandler<SettingsUpdatedDomainEvent>, RecalculateProcedureHandler>();
             
         } 
     }

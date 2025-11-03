@@ -7,23 +7,30 @@ namespace Domain.Events.Service
     {
     }
 
-    public class RecalculateProcedureHandler
+    public interface IDomainEventhandler<TEvent> where TEvent :IDomainEvent
     {
-        private readonly IProcedureRepository _repo;
+        Task HandleAsync(TEvent domainEvent);
+    }
 
-        public RecalculateProcedureHandler(IProcedureRepository repo)
+    public class RecalculateProcedureHandler :IDomainEventhandler<SettingsUpdatedDomainEvent>
+    {
+        private readonly IUnitOfWork _uow;
+
+        public RecalculateProcedureHandler(IUnitOfWork uow)
         {
-            _repo = repo;
+            _uow = uow;
         }
 
-        public async Task HandleAsync()
+        public async Task HandleAsync(SettingsUpdatedDomainEvent domainEvent)
         {
-            List<Procedure> preoc = await _repo.GetNonFixedPrice();
+            List<Procedure> preoc = await _uow.procedureRepository.GetNonFixedPrice();
 
             foreach (Procedure proc in preoc)
             {
-               // proc.RecalculatePrice();
+               proc.RecalculatePrice(domainEvent.newBasePrice);
             }
+
+            //await _uow.SaveChangesAsync();
         }
     }
 }

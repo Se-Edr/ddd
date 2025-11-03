@@ -12,5 +12,9 @@ namespace Domain.Models
         {
             _domailEvents.Add(someEvent);
         }
+        public void ClearDomainEvents()
+        {
+            _domailEvents.Clear();
+        }
     }
 }
