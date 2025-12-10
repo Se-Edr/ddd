@@ -3,8 +3,10 @@ using Domain.Repositories;
 using Infrastructure.DataBase;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Infrastructure
 {
@@ -16,12 +18,32 @@ namespace Infrastructure
 
             services.AddDbContext<DatabaseContext>(opts=>opts.UseSqlServer(connstr));
 
+            services.AddStackExchangeRedisCache(opts =>
+            {
+                opts.Configuration = "192.168.1.175:1239";
+                opts.InstanceName = "ServiceSettings_";
+            });
+
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IServiceSettingRepository, SettingsRepository>();
+
+            services.AddScoped<SettingsRepository>();
+            services.AddScoped<IServiceSettingRepository>(sp =>
+            {
+                var context= sp.GetRequiredService<DatabaseContext>();
+                var cache = sp.GetRequiredService<IDistributedCache>();
+
+                var baseRepo= new SettingsRepository(context);
+                var cachedRepo = new CachedSettingsRepository(baseRepo,cache);
+
+                return cachedRepo;
+            });
+
+
             services.AddScoped<IProcedureRepository, ProcedureRepository>();
             services.AddScoped<IWorkingDayRepository, WorkingDayRepository>();
             services.AddScoped<IMeetingRepository, MeetingRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             services.AddScoped<IDomainDispatcher, DomainEventDispatcher>();
             services.AddScoped<IDomainEventhandler<SettingsUpdatedDomainEvent>, RecalculateProcedureHandler>();
             

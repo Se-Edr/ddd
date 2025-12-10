@@ -1,12 +1,16 @@
-﻿using Domain.Models.ServiceSetting;
+﻿using Domain.DTOs;
+using Domain.Models.ServiceSetting;
 using Domain.Repositories;
 using Infrastructure.DataBase;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace Infrastructure.Repositories
 {
     public class SettingsRepository(DatabaseContext _context) : IServiceSettingRepository
     {
+        
         public async Task AddAsync(ServiceSettings entity)
         {
             await _context.SettingsTable.AddAsync(entity);
@@ -24,11 +28,17 @@ namespace Infrastructure.Repositories
 
         public async Task<ServiceSettings> GetSettings()
         {
+            
+
+
             ServiceSettings sett= await _context.SettingsTable.FirstOrDefaultAsync();
             if (sett == null)
             {
                 throw new Exception("No settings");
             }
+
+            
+
             return sett;
         }
 
@@ -37,4 +47,6 @@ namespace Infrastructure.Repositories
             throw new NotImplementedException();
         }
     }
+
+    
 }

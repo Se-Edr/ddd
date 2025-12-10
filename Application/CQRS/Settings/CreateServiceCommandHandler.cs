@@ -38,9 +38,9 @@ namespace Application.CQRS.Settings
             }
             else
             {
-                existing.EditServiceSeTtings(request.window,
+                existing.EditServiceSettings(request.window,
                 request.price,
-                morn, whole,existing);
+                morn, whole);
 
 
                 await _uow.SaveChangesAsync();

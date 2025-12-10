@@ -1,11 +1,12 @@
 ﻿using Domain.Events.Service;
 using Shared;
+using System.Text.Json.Serialization;
 
 namespace Domain.Models.ServiceSetting
 {
     public class ServiceSettings:MainEntity
     {
-        public int Id;
+        public int Id { get; internal set; }
         private ServiceSettings(){}
         private ServiceSettings(int minutes,int price, Shift morn, Shift wholeDay )
         {
@@ -27,15 +28,16 @@ namespace Domain.Models.ServiceSetting
             return settings;
         }
 
-        public ServiceSettings EditServiceSeTtings(int minutes, int price, Shift morn, Shift wholeDay,ServiceSettings settings)
+        public ServiceSettings EditServiceSettings(int minutes, int price, Shift morn, Shift wholeDay)
         {
             BasePricePerWindow = price;
             BaseWindowInMinutes = minutes;
             Morning = morn;
             WholeDay = wholeDay;
             AddDomainEvent(new SettingsUpdatedDomainEvent(BasePricePerWindow));
-            return settings;
+            return this;
         }
+
 
     }
 
@@ -44,6 +46,7 @@ namespace Domain.Models.ServiceSetting
         public TimeOnly startTime { get;  }
         public TimeOnly finishTime { get;}
 
+        
         public Shift(TimeOnly startTime, TimeOnly finishTime)
         {
             Result res=CheckDates(startTime, finishTime);

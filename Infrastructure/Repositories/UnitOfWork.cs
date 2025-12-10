@@ -1,6 +1,5 @@
 ﻿using Domain.Events.Service;
 using Domain.Models;
-using Domain.Models.ServiceSetting;
 using Domain.Repositories;
 using Infrastructure.DataBase;
 
@@ -13,6 +12,7 @@ namespace Infrastructure.Repositories
         public IServiceSettingRepository serviceSettingsRepository { get; }
         public IWorkingDayRepository workingDayRepository { get; }
         public IMeetingRepository meetingRepository { get; }
+        public IEmployeeRepository employeeRepository { get; }
 
 
         private readonly IDomainDispatcher _dispatcher;
@@ -22,6 +22,7 @@ namespace Infrastructure.Repositories
             IServiceSettingRepository serviceSettingsRepository,
             IWorkingDayRepository workingDayRepository,
             IMeetingRepository meetingRepository,
+            IEmployeeRepository employeeRepository,
             IDomainDispatcher dispatcher
             )
         {
@@ -30,6 +31,7 @@ namespace Infrastructure.Repositories
             this.serviceSettingsRepository = serviceSettingsRepository;
             this.workingDayRepository = workingDayRepository;
             this.meetingRepository = meetingRepository;
+            this.employeeRepository = employeeRepository;
             _dispatcher = dispatcher;
         }
 

@@ -1,4 +1,5 @@
 ﻿using Domain.Models.Appointment;
+using Domain.Models.Employees;
 using Domain.Models.Operation;
 using Domain.Models.ServiceSetting;
 using Domain.Models.Termin;
@@ -14,6 +15,7 @@ namespace Infrastructure.DataBase
         public DbSet<WorkingDay> DaysTable { get; set;}
         public DbSet<Procedure> ProceduresTable { get; set;}
         public DbSet<Meeting> MeetingsTable { get; set; } 
+        public DbSet<Employee> Employees {  get; set;}
         public DatabaseContext(DbContextOptions opts) : base(opts) { }
 
 
@@ -24,6 +26,7 @@ namespace Infrastructure.DataBase
             modelBuilder.ApplyConfiguration(new ProcedureModelConfiguration());
             modelBuilder.ApplyConfiguration(new WorkingDayModelConfiguration());
             modelBuilder.ApplyConfiguration(new MeetingModelConfiguration());
+            modelBuilder.ApplyConfiguration(new EmployeeModelConfiguration());
         }
 
      }
