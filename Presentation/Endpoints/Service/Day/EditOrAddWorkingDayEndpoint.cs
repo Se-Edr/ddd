@@ -13,14 +13,14 @@ namespace Presentation.Endpoints.Service.Day
     {
         public void AddRoutes(IEndpointRouteBuilder app)
         {
-            app.MapPost("api/days/eitOrAdd", async ([FromBody] EditOrAddRequest list, IMediator mediator) =>
+            app.MapPost("api/days/editOrAdd", async ([FromBody] EditOrAddRequest list, IMediator mediator) =>
             {
-                foreach(var r in list.days)
+                foreach(EditOrCreateWorkingDay r in list.days)
                 {
-                    if (r.add  && !r.day.HasValue)
+                    if (r.add  && r.day.HasValue)
                     {
                         CreateWorkingDayCommand create = new CreateWorkingDayCommand(r.day.Value,r.shiftId.Value);
-                      //  await mediator.Send(create);
+                        await mediator.Send(create);
                     }
                     if (r.edit && r.day.HasValue)
                     {
