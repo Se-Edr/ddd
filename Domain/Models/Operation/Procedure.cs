@@ -4,7 +4,7 @@ using Domain.Repositories;
 
 namespace Domain.Models.Operation
 {
-    public class Procedure
+    public class Procedure:MainEntity
     {
         private Procedure()
         {

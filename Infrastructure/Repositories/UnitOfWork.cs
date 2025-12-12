@@ -1,5 +1,4 @@
-﻿using Domain.Events.Service;
-using Domain.Models;
+﻿using Domain.Events;
 using Domain.Repositories;
 using Infrastructure.DataBase;
 
@@ -15,7 +14,9 @@ namespace Infrastructure.Repositories
         public IEmployeeRepository employeeRepository { get; }
 
 
-        private readonly IDomainDispatcher _dispatcher;
+        private IDomainDispatcher dispatcher { get; }
+        private ITrackedEntitiesCollection trackedEntitiesCollection { get; }
+        
         public UnitOfWork(
             DatabaseContext context,
             IProcedureRepository procedureRepository,
@@ -23,6 +24,8 @@ namespace Infrastructure.Repositories
             IWorkingDayRepository workingDayRepository,
             IMeetingRepository meetingRepository,
             IEmployeeRepository employeeRepository,
+
+            ITrackedEntitiesCollection trackedEntitiesCollection,
             IDomainDispatcher dispatcher
             )
         {
@@ -32,22 +35,26 @@ namespace Infrastructure.Repositories
             this.workingDayRepository = workingDayRepository;
             this.meetingRepository = meetingRepository;
             this.employeeRepository = employeeRepository;
-            _dispatcher = dispatcher;
+
+            this.trackedEntitiesCollection = trackedEntitiesCollection;
+            this.dispatcher = dispatcher;
         }
 
         public async Task SaveChangesAsync()
         {
-            var entitiesWithEvents = _context.ChangeTracker
-                .Entries<MainEntity>().Select(e => e.Entity)
-                .Where(e => e.DomainEvents.Any()).ToList();
+            List<IDomainEvent> allevents = new();
+            var ents= trackedEntitiesCollection.GetTrackedEntities();
 
-            var allEvents = entitiesWithEvents
-                .SelectMany(e=>e.DomainEvents).ToList();
-
-            await _dispatcher.DispatchAsync(allEvents);
-            foreach(var entity in entitiesWithEvents)
+            foreach (var ent in ents) 
             {
-                entity.ClearDomainEvents();
+                allevents.AddRange(ent.DomainEvents);
+            }
+
+            trackedEntitiesCollection.ClearAll();
+
+            if (allevents.Any())
+            {
+                await dispatcher.DispatchAsync(allevents);
             }
 
             await _context.SaveChangesAsync();

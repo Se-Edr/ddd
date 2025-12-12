@@ -34,7 +34,7 @@ namespace Domain.Models.ServiceSetting
             BaseWindowInMinutes = minutes;
             Morning = morn;
             WholeDay = wholeDay;
-            AddDomainEvent(new SettingsUpdatedDomainEvent(BasePricePerWindow));
+            RaiseDomainEvent(new ServiceBasePriceUpdatedEvent(BasePricePerWindow));
             return this;
         }
 

@@ -16,7 +16,7 @@ namespace Infrastructure.Repositories
         {
             string settingsJson = JsonSerializer.Serialize(
                new ServiceSettingsDTO(
-               entity.BasePricePerWindow,
+               entity.BaseWindowInMinutes,
                entity.BasePricePerWindow,
                entity.Morning.startTime,
                entity.Morning.finishTime,
@@ -62,7 +62,7 @@ namespace Infrastructure.Repositories
             ServiceSettings sett = await _serviceRepo.GetSettings();
 
             ServiceSettingsDTO cached = new ServiceSettingsDTO(
-                sett.BasePricePerWindow,
+                sett.BaseWindowInMinutes,
                 sett.BasePricePerWindow,
                 sett.Morning.startTime,
                 sett.Morning.finishTime,
@@ -82,6 +82,19 @@ namespace Infrastructure.Repositories
 
         public async Task UpdateAsync(ServiceSettings entity)
         {
+            string settingsJson = JsonSerializer.Serialize(
+               new ServiceSettingsDTO(
+               entity.BaseWindowInMinutes,
+               entity.BasePricePerWindow,
+               entity.Morning.startTime,
+               entity.Morning.finishTime,
+               entity.WholeDay.startTime,
+               entity.WholeDay.finishTime
+               ));
+            await _cache.SetStringAsync(_cacheKey, settingsJson, new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(40)
+            });
             await _serviceRepo.UpdateAsync(entity);
         }
     }

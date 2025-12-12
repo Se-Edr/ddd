@@ -8,7 +8,6 @@ namespace Infrastructure.Repositories
 
     public class ProcedureRepository(DatabaseContext _context) : IProcedureRepository
     {
-        
         public async Task AddAsync(Procedure entity)
         {
             await _context.ProceduresTable.AddAsync(entity);

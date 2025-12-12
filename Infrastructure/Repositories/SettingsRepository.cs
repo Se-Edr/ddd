@@ -1,14 +1,13 @@
-﻿using Domain.DTOs;
+﻿using Domain.Events;
 using Domain.Models.ServiceSetting;
 using Domain.Repositories;
 using Infrastructure.DataBase;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
+
 
 namespace Infrastructure.Repositories
 {
-    public class SettingsRepository(DatabaseContext _context) : IServiceSettingRepository
+    public class SettingsRepository(DatabaseContext _context,ITrackedEntitiesCollection _entitiesCollection) : IServiceSettingRepository
     {
         
         public async Task AddAsync(ServiceSettings entity)
@@ -28,23 +27,18 @@ namespace Infrastructure.Repositories
 
         public async Task<ServiceSettings> GetSettings()
         {
-            
-
-
             ServiceSettings sett= await _context.SettingsTable.FirstOrDefaultAsync();
             if (sett == null)
             {
                 throw new Exception("No settings");
             }
-
-            
-
             return sett;
         }
 
-        public Task UpdateAsync(ServiceSettings entity)
+        public async Task UpdateAsync(ServiceSettings entity)
         {
-            throw new NotImplementedException();
+            _entitiesCollection.AppendEntityToTracker(entity);
+            _context.SettingsTable.Update(entity);
         }
     }
 

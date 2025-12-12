@@ -1,4 +1,5 @@
-﻿using Domain.Models.ServiceSetting;
+﻿using Domain.Events;
+using Domain.Models.ServiceSetting;
 using Domain.Repositories;
 using Mediatator.Core.ComsQueries;
 
@@ -41,7 +42,9 @@ namespace Application.CQRS.Settings
                 existing.EditServiceSettings(request.window,
                 request.price,
                 morn, whole);
+                
 
+                await _uow.serviceSettingsRepository.UpdateAsync(existing);
 
                 await _uow.SaveChangesAsync();
                 return existing;

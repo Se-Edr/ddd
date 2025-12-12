@@ -1,7 +1,6 @@
 ﻿using Domain.Models.ServiceSetting;
 using Domain.Models.Termin;
 using Domain.Repositories;
-using Infrastructure.DataBase;
 using Mediatator.Core.ComsQueries;
 
 namespace Application.CQRS.WorkingDay

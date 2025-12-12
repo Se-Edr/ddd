@@ -1,6 +1,5 @@
 ﻿using Domain.Models.Operation;
 using Domain.Repositories;
-using Infrastructure.DataBase;
 using Mediatator.Core.ComsQueries;
 
 

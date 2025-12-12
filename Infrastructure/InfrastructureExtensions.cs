@@ -1,4 +1,5 @@
-﻿using Domain.Events.Service;
+﻿using Domain.Events;
+using Domain.Events.Service;
 using Domain.Repositories;
 using Infrastructure.DataBase;
 using Infrastructure.Repositories;
@@ -31,9 +32,10 @@ namespace Infrastructure
             services.AddScoped<IServiceSettingRepository>(sp =>
             {
                 var context= sp.GetRequiredService<DatabaseContext>();
+                var tracker = sp.GetRequiredService<ITrackedEntitiesCollection>();
                 var cache = sp.GetRequiredService<IDistributedCache>();
 
-                var baseRepo= new SettingsRepository(context);
+                var baseRepo= new SettingsRepository(context,tracker);
                 var cachedRepo = new CachedSettingsRepository(baseRepo,cache);
 
                 return cachedRepo;
@@ -44,8 +46,10 @@ namespace Infrastructure
             services.AddScoped<IWorkingDayRepository, WorkingDayRepository>();
             services.AddScoped<IMeetingRepository, MeetingRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IDomainDispatcher, DomainEventDispatcher>();
-            services.AddScoped<IDomainEventhandler<SettingsUpdatedDomainEvent>, RecalculateProcedureHandler>();
+
+            services.AddScoped<IDomainDispatcher, DomainDispatcher>();
+            services.AddScoped<ITrackedEntitiesCollection, TrackedEntitesCollection>();
+            services.AddScoped<IDomainEventHandler<ServiceBasePriceUpdatedEvent>, ServiceBasePriceUpdatedHandler>();
             
         } 
     }

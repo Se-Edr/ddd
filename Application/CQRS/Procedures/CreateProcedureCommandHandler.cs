@@ -1,7 +1,6 @@
 ﻿using Domain.Models.Operation;
 using Domain.Models.ServiceSetting;
 using Domain.Repositories;
-using Infrastructure.DataBase;
 using Mediatator.Core.ComsQueries;
 
 namespace Application.CQRS.Procedures

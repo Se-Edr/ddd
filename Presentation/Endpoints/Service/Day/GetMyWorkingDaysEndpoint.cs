@@ -1,7 +1,6 @@
 ﻿using Application.CQRS.WorkingDay;
 using Carter;
 using Domain.Models.Termin;
-using Infrastructure.DataBase;
 using Mediatator.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
